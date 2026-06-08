@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Target, CheckCircle2, Camera } from 'lucide-react';
+import { Target, CheckCircle2 } from 'lucide-react';
 
 export default function Login() {
   const [isRegister, setIsRegister] = useState(false);
@@ -8,28 +8,10 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
-  const [photoUri, setPhotoUri] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
   const { login, register } = useAuth();
-  const fileInputRef = useRef(null);
-
-  const triggerFileInput = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPhotoUri(reader.result);
-    };
-    reader.readAsDataURL(file);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,7 +21,7 @@ export default function Login() {
     try {
       if (isRegister) {
         if (!name.trim()) throw new Error('Please enter your name');
-        await register(name.trim(), email.trim(), password, phone.trim(), photoUri.trim());
+        await register(name.trim(), email.trim(), password, phone.trim(), '');
       } else {
         await login(email.trim(), password);
       }
@@ -81,28 +63,6 @@ export default function Login() {
         <form className="auth-form" onSubmit={handleSubmit}>
           {isRegister && (
             <>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '16px' }}>
-                <label className="input-label" style={{ marginBottom: '12px' }}>PROFILE PHOTO</label>
-                <div className="profile-avatar-wrapper" onClick={triggerFileInput} style={{ cursor: 'pointer', position: 'relative' }}>
-                  {photoUri ? (
-                    <img src={photoUri} alt="Avatar" className="profile-avatar" />
-                  ) : (
-                    <div className="profile-avatar-placeholder" style={{ fontSize: '36px' }}>
-                      <Camera size={32} />
-                    </div>
-                  )}
-                  <div className="profile-avatar-hover-overlay">
-                    <Camera size={20} color="white" />
-                  </div>
-                </div>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  style={{ display: 'none' }}
-                  onChange={handleFileChange}
-                />
-              </div>
 
               <div>
                 <label className="input-label">YOUR NAME</label>
@@ -164,7 +124,6 @@ export default function Login() {
             setIsRegister(!isRegister);
             setError('');
             setPhone('');
-            setPhotoUri('');
           }}>
             {isRegister ? 'Sign In' : 'Sign Up'}
           </span>

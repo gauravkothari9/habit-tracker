@@ -120,10 +120,10 @@ export default function Challenges() {
   return (
     <div className="animate-fade-in" style={{ position: 'relative', minHeight: '80vh' }}>
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+      <div className="page-header-row">
         <div>
-          <h1 style={{ fontSize: '32px', fontWeight: 800 }}>Your Challenges</h1>
-          <p style={{ color: 'var(--text-secondary)', fontWeight: 600, marginTop: '4px' }}>
+          <h1 className="page-title">Your Challenges</h1>
+          <p className="page-subtitle">
             {challenges.filter(c => c.completedDays < c.duration).length} active journeys
           </p>
         </div>

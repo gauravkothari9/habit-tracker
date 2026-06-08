@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { User as UserIcon, Moon, LogOut, Check, Save, Bell, Camera } from 'lucide-react';
+import { User as UserIcon, Moon, LogOut, Check, Save, Bell } from 'lucide-react';
 
 function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -23,20 +23,11 @@ export default function Profile() {
   const { isDarkMode, toggleTheme } = useTheme();
   const [name, setName] = useState(user.name);
   const [phone, setPhone] = useState(user.phone || '');
-  const [avatarUrl, setAvatarUrl] = useState(user.photoUri || '');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
   const [pushSubscribed, setPushSubscribed] = useState(false);
   const [pushLoading, setPushLoading] = useState(false);
-
-  const fileInputRef = useRef(null);
-
-  const triggerFileInput = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
 
   useEffect(() => {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
@@ -119,16 +110,6 @@ export default function Profile() {
     }
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setAvatarUrl(reader.result);
-    };
-    reader.readAsDataURL(file);
-  };
-
   const handleSave = async (e) => {
     e.preventDefault();
     if (!name.trim()) return alert('Name cannot be empty.');
@@ -138,8 +119,7 @@ export default function Profile() {
     try {
       await updateProfile({
         name: name.trim(),
-        phone: phone.trim(),
-        photoUri: avatarUrl.trim()
+        phone: phone.trim()
       });
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
@@ -153,34 +133,18 @@ export default function Profile() {
   return (
     <div className="animate-fade-in">
       {/* Header */}
-      <div style={{ marginBottom: '32px' }}>
-        <h1 style={{ fontSize: '32px', fontWeight: 800 }}>Profile Settings</h1>
-        <p style={{ color: 'var(--text-secondary)', fontWeight: 600, marginTop: '4px' }}>
-          Customize your experience
-        </p>
+      <div className="page-header">
+        <h1 className="page-title">Profile Settings</h1>
+        <p className="page-subtitle">Customize your experience</p>
       </div>
 
       <div className="card" style={{ marginBottom: '32px' }}>
         <div className="profile-avatar-row">
-          <div className="profile-avatar-wrapper" onClick={triggerFileInput} style={{ cursor: 'pointer', position: 'relative' }}>
-            {avatarUrl ? (
-              <img src={avatarUrl} alt="Avatar" className="profile-avatar" />
-            ) : (
-              <div className="profile-avatar-placeholder" style={{ fontSize: '36px' }}>
-                {user.name.charAt(0)}
-              </div>
-            )}
-            <div className="profile-avatar-hover-overlay">
-              <Camera size={20} color="white" />
+          <div className="profile-avatar-wrapper">
+            <div className="profile-avatar-placeholder" style={{ fontSize: '36px' }}>
+              {user.name.charAt(0)}
             </div>
           </div>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            style={{ display: 'none' }}
-            onChange={handleFileChange}
-          />
           <div className="profile-name-email">
             <h2 className="profile-name">{user.name}</h2>
             <span className="profile-email">{user.email}</span>

@@ -162,18 +162,14 @@ export default function Dashboard({ setActiveTab }) {
       )}
 
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+      <div className="page-header-row">
         <div>
-          <p style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>Good Day, {user.name}!</p>
-          <h1 style={{ fontSize: '32px', fontWeight: 800 }}>Your Journey</h1>
+          <p className="page-subtitle">Good Day, {user.name}!</p>
+          <h1 className="page-title">Your Journey</h1>
         </div>
-        {user.photoUri ? (
-          <img src={user.photoUri} alt="Avatar" className="profile-avatar" style={{ width: '48px', height: '48px' }} />
-        ) : (
-          <div className="profile-avatar-placeholder" style={{ width: '48px', height: '48px', fontSize: '20px' }}>
-            {user.name.charAt(0)}
-          </div>
-        )}
+        <div className="profile-avatar-placeholder header-avatar">
+          {user.name.charAt(0)}
+        </div>
       </div>
 
       {/* Motivation Quote */}
